@@ -23,39 +23,54 @@ augroup vimrcEx
 augroup END
 
 " Personal changes ========================================================
+
+set term=kitty
+" This deactivates kitty keyboard protocol which messes up with double esc
+	" command
+set keyprotocol=
+let &term= &term
 " Bindings 
 
 	" Fix stupid Y command default to follow logic of others (D, C, ...)
-noremap Y y$	
+nnoremap Y y$	
 
 	" Leader key mapping
 let g:mapleader = "!"
 let g:maplocalleader = "!"
-noremap <Leader><Leader> :w <CR>
+nnoremap <Leader><Leader> :w <CR>
 
 	" remaps movements to be graphicwise rather than linewise
 " noremap j gj
 " noremap k gk
 
+" remapping classic K to use YCM instead.
+nnoremap <S-K> :YcmCompleter GetDoc<CR>
+" Use a hover window to display doc
+nnoremap ² <plug>(YCMHover)
+let g:ycm_auto_hover=''
+
 "Makes it easy to deal with search highlighting : I decide when I want it with
 "esc esc but searching automatically activates it.
 "TODO: Have it so that when abandonning a search deactivates it.
-nnoremap <Esc><Esc> :set hlsearch!<CR>
-nnoremap / :set hlsearch<CR>/
-nnoremap ? :set hlsearch<CR>?
+" THIS IS KITTY SPECIFIC !!
+"nnoremap [27u[27u :set hlsearch!<CR>
+nnoremap <silent> <Esc><Esc> :set hlsearch!<CR>
+inoremap <silent> <Esc><Esc> <Esc>:set hlsearch!<CR>
+nnoremap <silent> / :set hlsearch<CR>/
+nnoremap <silent> ? :set hlsearch<CR>?
 
 	" Bindings for easier use of tpope's fugitive plugin
 " kills default mapping I don't want to mess up my cursor if
 " 	I'm too slow.
-noremap G <Nop>
+nnoremap G <Nop>
 " abbreviations to save time
 	" Opens a commit window and resize it
-noremap Gc :botright Git commit <CR>
-noremap Gw :Gwrite <CR>
-map Gf GwGc 
-noremap Gp :Git push <CR>
+nnoremap Gc :botright Git commit<CR>
+nnoremap Gw :Gwrite<CR>
+nmap Gf GwGc 
+nnoremap Gp :Git push<CR>
 " this is the old behavior of G solo remapped to GG
-noremap GG 100%
+nnoremap GG 100%
 " Latex Bindings
 if has("autocmd")
 	autocmd FileType tex set makeprg=latexmk
@@ -91,12 +106,12 @@ set relativenumber	" together with number shows true number on active line
 set hlsearch		" Activates the hilighting in searches
 set path+=**		" Searches a file throught sub-directories
 set showcmd			" Show the command in normal mode
-set smartindent		" Indentation auto
+set autoindent		" Indentation auto
 set wildmenu		" Affiche une liste d'autocompletion
 set linebreak		" Ne wrap pas au milieu d'un mot
 set autowrite		" Automatically writes a buffer if opening something else
 set ignorecase 		" Ignores case on a search pattern unless
-set smartcase		" Upper case is used
+set smartcase			" Upper case is used
 set cursorline 		" Highlights current cursor line
 " Sets the folders for the backup files (*~) as being in .vim
 set backupdir=~/.vim/temp//,.
