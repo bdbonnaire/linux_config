@@ -1,0 +1,7 @@
+import numpy as np
+import matplotlib.pyplot as plt
+#Turns matplotlib interactive mode on
+%matplotlib
+#adds the autoreloading of imported plugins
+%load_ext autoreload
+%autoreload 2
