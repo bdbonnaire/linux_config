@@ -24,11 +24,6 @@ augroup END
 
 " Personal changes ========================================================
 
-set term=kitty
-" This deactivates kitty keyboard protocol which messes up with double esc
-	" command
-set keyprotocol=
-let &term= &term
 " Bindings 
 
 	" Fix stupid Y command default to follow logic of others (D, C, ...)
@@ -88,9 +83,9 @@ if has("autocmd")
 	autocmd FileType tex inoremap <buffer> <) ]
 	autocmd FileType tex setlocal spell spelllang=en_us
 endif
-function FugitiveStatusWrapper() 
+" function FugitiveStatusWrapper() 
    	
-endfunction
+" endfunction
 
 " Closing of brackets and stuff
 " inoremap ' ''<Left>
@@ -101,6 +96,7 @@ endfunction
 
 " General Options
 set encoding=utf-8
+scriptencoding utf-8
 set number			" Show line numbers 
 set relativenumber	" together with number shows true number on active line
 set hlsearch		" Activates the hilighting in searches
@@ -125,6 +121,13 @@ set splitright 		" when splitting the newly opened window goes on the right
 	" Tab preferences
 set shiftwidth=4	" defini la taille du shift auto (e.g << ou >>)
 set tabstop=4		" defini la taille du caractere <Tab> à l'ecran
+" make tabs and spaces show a little line
+set list	"allow showing characters for invisible ones
+"the list of characters
+"	tab takes 3 args expanded like this <->
+"	multispace takes a list that is repeated cyclically
+" The line is not | but │, a unicode character for box building.
+set listchars=tab:\ \ │,multispace:\ \ \ │
 
 	" StatusLine
 
@@ -145,6 +148,15 @@ let g:netrw_banner = 0		" Hides the directory banner. Show it with `I`
 let g:netrw_liststyle = 3	" makes the tree listing style the default
 let g:netrw_list_hide ='^\..*' " Hides dotfiles by default
 let g:netrw_list_hide .=',^__.*' " Hides files starting with __ by default (usually python stuff)
+
+" Color and Terminal Configs
+
+if (has("termguicolors"))
+	set termguicolors " set colors to be 24-bits, allowing custom themes
+	" However this mode fixes the number of colors in the terminal to 16 (Ah,
+	" compatibility when you hold us). Here's me hard-setting them to gruvbox dark.
+	let g:terminal_ansi_colors =['#282828','#cc241d', '#98971a', '#d79921', '#458588', '#b16286', '#689d6a', '#a89984', '#928374', '#fb4934', '#b8bb26', '#fabd2f', '#83a598', '#d3869b', '#8ec07c', '#ebdbb2']
+endif
 
 " C++ specific definitions
 if has("autocmd")
@@ -179,10 +191,6 @@ endif
 " loaded during initialization.
 if has('syntax') && has('eval')
   packadd! matchit
-endif
-
-if (has("termguicolors"))
-	set termguicolors
 endif
 
 " **Vim-Plug** plugin manager
