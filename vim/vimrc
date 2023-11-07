@@ -66,6 +66,16 @@ nmap Gf GwGc
 nnoremap Gp :Git push<CR>
 " this is the old behavior of G solo remapped to GG
 nnoremap GG 100%
+
+" Math unicode digraphs for sets
+if has("digraphs")
+	call digraph_set("NN", "ℕ")
+	call digraph_set("ZZ", "ℤ")
+	call digraph_set("QQ", "ℚ")
+	call digraph_set("RR", "ℝ")
+	call digraph_set("CC", "ℂ")
+endif
+
 " Latex Bindings
 if has("autocmd")
 	autocmd FileType tex set makeprg=latexmk
@@ -211,6 +221,7 @@ Plug 'honza/vim-snippets'
 Plug 'goerz/jupytext.vim'
 Plug 'puremourning/vimspector'
 Plug 'tpope/vim-abolish'
+Plug 'sillybun/vim-repl'
 
 call plug#end()
 "********************************************************************
@@ -219,6 +230,25 @@ call plug#end()
 
 let g:ycm_autoclose_preview_window_after_insertion = 1
 
+""""""""""""""""""""""""""""""""""""""""""""""
+" vim-repl config
+""""""""""""""""""""""""""""""""""""""""""""""
+let g:repl_program = {
+\	'python': ['ipython'],
+\	'julia': ['julia'],
+\	'default': ['bash']
+\	}
+
+let g:repl_ipython_version = '8.16'
+nnoremap <silent> <leader>r :REPLToggle<cr>
+let g:repl_position = 3
+let g:repl_exit_commands = {
+\	'python': 'quit()',
+\	'julia': 'exit()',
+\	'bash': 'exit',
+\	'zsh': 'exit',
+\	'default': 'exit',
+\	}
 """"""""""""""""""""""""""""""""""""""""""""""
 " Gruvbox config
 """"""""""""""""""""""""""""""""""""""""""""""
