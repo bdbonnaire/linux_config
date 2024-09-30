@@ -26,6 +26,10 @@ augroup END
 
 " Bindings 
 
+set formatoptions-=cro
+" edit the vimrc in another tab 
+nnoremap Trc :tabedit $MYVIMRC<CR>
+
 	" Fix stupid Y command default to follow logic of others (D, C, ...)
 nnoremap Y y$	
 
@@ -66,32 +70,55 @@ nmap Gf GwGc
 nnoremap Gp :Git push<CR>
 " this is the old behavior of G solo remapped to GG
 nnoremap GG 100%
-
+" Making the commit edit window be in insert mode by default
+autocmd BufRead COMMIT_EDITMSG startinsert
 " Math unicode digraphs for sets
 if has("digraphs")
+	" Math Sets
 	call digraph_set("NN", "ℕ")
 	call digraph_set("ZZ", "ℤ")
 	call digraph_set("QQ", "ℚ")
 	call digraph_set("RR", "ℝ")
 	call digraph_set("CC", "ℂ")
+	" Math Operators
+	call digraph_set("/:", "÷")
+	call digraph_set(":/", "÷")
+	call digraph_set("/e", "∉")
+	call digraph_set("e/", "∉")
 endif
 
 " Latex Bindings
 if has("autocmd")
-	autocmd FileType tex set makeprg=latexmk
-	autocmd FileType tex inoremap <buffer> ùù \
-	autocmd FileType tex imap <buffer> ù' {
-	autocmd FileType tex imap <buffer> ùr {
-	autocmd FileType tex imap <buffer> <' {
-	autocmd FileType tex inoremap <buffer> ù= }
-	autocmd FileType tex inoremap <buffer> ùt }
-	autocmd FileType tex inoremap <buffer> <= }
-	autocmd FileType tex imap <buffer> ù( [
-	autocmd FileType tex imap <buffer> <( [
-	autocmd FileType tex inoremap <buffer> ù) ]
-	autocmd FileType tex inoremap <buffer> ù- ]
-	autocmd FileType tex inoremap <buffer> <) ]
-	autocmd FileType tex setlocal spell spelllang=en_us
+	augroup latex
+		autocmd FileType tex set makeprg=latexmk
+		autocmd FileType tex inoremap <buffer> ùù \
+		autocmd FileType tex imap <buffer> ù' {
+		autocmd FileType tex imap <buffer> ùr {
+		autocmd FileType tex imap <buffer> <' {
+		autocmd FileType tex inoremap <buffer> ù= }
+		autocmd FileType tex inoremap <buffer> ùt }
+		autocmd FileType tex inoremap <buffer> <= }
+		autocmd FileType tex imap <buffer> ù( [
+		autocmd FileType tex imap <buffer> <( [
+		autocmd FileType tex inoremap <buffer> ù) ]
+		autocmd FileType tex inoremap <buffer> ù- ]
+		autocmd FileType tex inoremap <buffer> <) ]
+		autocmd FileType tex setlocal spell spelllang=en_us
+	augroup END
+
+	augroup typst
+		autocmd FileType typt setlocal spell spelllang=en_us
+		" makes it so % works with inline math ( supposing that there's a
+		" space before the $)
+		let b:match_words ='\s\?\zs\$:\$\s\?\ze'
+	augroup END
+
+	augroup julia
+		autocmd FileType julia set foldmethod=indent
+		autocmd FileType julia set foldmethod=manual
+		" autocmd FileType julia set foldmethod=expr
+		" autocmd FileType julia set foldexpr=getline(v:lnum)
+	augroup END
 endif
 " function FugitiveStatusWrapper() 
    	
@@ -218,15 +245,19 @@ Plug 'lervag/vimtex'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'sirver/ultisnips'
 Plug 'honza/vim-snippets'
-Plug 'goerz/jupytext.vim'
 Plug 'puremourning/vimspector'
 Plug 'tpope/vim-abolish'
 Plug 'sillybun/vim-repl'
+Plug 'luochen1990/rainbow'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'kmonad/kmonad-vim'
+Plug 'kaarmu/typst.vim'
 
 call plug#end()
 "********************************************************************
 " plugin config
 "********************************************************************
+let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
 
 let g:ycm_autoclose_preview_window_after_insertion = 1
 
@@ -236,6 +267,7 @@ let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:repl_program = {
 \	'python': ['ipython'],
 \	'julia': ['julia'],
+\	'matlab': ['matlab -nodesktop -nosplash'],
 \	'default': ['bash']
 \	}
 
@@ -245,10 +277,15 @@ let g:repl_position = 3
 let g:repl_exit_commands = {
 \	'python': 'quit()',
 \	'julia': 'exit()',
+\	'matlab': 'quit',
 \	'bash': 'exit',
 \	'zsh': 'exit',
 \	'default': 'exit',
 \	}
+
+" Disable the auto_import
+let g:repl_python_auto_import = 0
+nnoremap <silent> <leader>x :REPLSendSession<cr>
 """"""""""""""""""""""""""""""""""""""""""""""
 " Gruvbox config
 """"""""""""""""""""""""""""""""""""""""""""""
@@ -281,3 +318,14 @@ let g:UltiSnipsExpandTrigger="<Enter>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 let g:ultisnips_python_style="numpy"
+
+"""""""""""""""""""""""""""""""""""""""""""""
+" CtrlP config
+"""""""""""""""""""""""""""""""""""""""""""""
+if executable('ag')
+  " Use Ag over Grep
+  set grepprg=ag\ --nogroup\ --nocolor
+
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+endif
