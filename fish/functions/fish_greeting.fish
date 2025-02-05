@@ -1,7 +1,6 @@
 function fish_greeting
    set -g fish_greeting "$line1$line2"
 
-	cowsay Long Live Signal Processing !
     if set -q fish_private_mode
         set -l line (_ "fish is running in private mode, history will not be persisted.")
         if set -q fish_greeting[1]
